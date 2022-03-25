@@ -10,32 +10,32 @@ public class Stacker {
     public static void main(String[] args) {
 
         String filePath = "src/files/Calc1.stk";
-        Stack<Integer> stack = new Stack<Integer>();
+        Stack<Double> stack = new Stack<Double>();
 
         try(BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath))){
             String value = bufferedReader.readLine();
             while (value != null) {
                 if(!value.equals("+") && !value.equals("-") && !value.equals("*") && !value.equals("/")){
-                    stack.push(Integer.parseInt(value));
+                    stack.push(Double.parseDouble(value));
                 }
                 else{
-                    int v2 = stack.pop();
-                    int v1 = stack.pop();
+                    double v2 = stack.pop();
+                    double v1 = stack.pop();
 
                     if(value.equals("+")){
-                        int newValue = v1 + v2;
+                        double newValue = v1 + v2;
                         stack.push(newValue);
                     }
                     if(value.equals("-")){
-                        int newValue = v1 - v2;
+                        double newValue = v1 - v2;
                         stack.push(newValue);
                     }
                     if(value.equals("*")){
-                        int newValue = v1 * v2;
+                        double newValue = v1 * v2;
                         stack.push(newValue);
                     }
                     if(value.equals("/")){
-                        int newValue = v1 / v2;
+                        double newValue = v1 / v2;
                         stack.push(newValue);
                     }
                 }
@@ -44,6 +44,6 @@ public class Stacker {
         }catch (IOException e){
             System.out.println(e.getMessage());
         }
-        System.out.println(stack.pop());
+        System.out.printf("%.2f\n", stack.pop());
     }
 }
