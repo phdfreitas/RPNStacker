@@ -10,3 +10,8 @@
 * A nova feature deve retornar uma lista de tokens.
 * A interpretação das expressões é realizada a partir da lista de tokens. 
 * A feature de scanning deve retornar um erro caso não reconheça um token. 
+
+## Task 3 - RPNStacker ID Expression
+* A partir de agora a linguagem dará suporte para variáveis (ids). Isso implica em mudança de gramática
+* De acordo com a nova gramática, o projeto da RPNStacker deve ser atualizado para dar suporte a variáveis/ids
+* A regra para criação de ids é livre.
