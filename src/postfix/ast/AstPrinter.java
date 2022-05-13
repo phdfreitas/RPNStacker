@@ -22,6 +22,11 @@ public class AstPrinter implements Expr.Visitor<String>{
 				expr.left, expr.right);
 	}
 
+	@Override
+	public String visitIdExpr(Expr.Id expr) {
+		return expr.value.toString();
+	}
+
 	// -------------------------------------------------------------
 	// HELPERS METHODS
 	// -------------------------------------------------------------

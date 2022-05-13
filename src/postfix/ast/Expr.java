@@ -27,6 +27,7 @@ public abstract class Expr {
 	public interface Visitor<T> {
 		T visitNumberExpr(Number expr);
 		T visitBinopExpr(Binop expr);
+		T visitIdExpr(Id expr);
 	}
 
 	// Nested Expr classes here
@@ -45,9 +46,23 @@ public abstract class Expr {
 		public final String value;
 	}
 
+	// Id expression
+	public static class Id extends Expr{
+		public Id(String value){
+			this.value = value;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor){
+			return visitor.visitIdExpr(this);
+		}
+
+		public final String value;
+	}
+
 	// Binop expression
 	public static class Binop extends Expr {
-		public Binop(Expr left, Expr right, Token operator) {
+		public Binop(Expr right, Expr left, Token operator) {
 			this.left = left;
 			this.right = right;
 			this.operator = operator;

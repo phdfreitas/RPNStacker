@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 
 import postfix.ast.AstPrinter;
@@ -30,6 +31,7 @@ import postfix.interpreter.Interpreter;
 import postfix.lexer.LexError;
 import postfix.lexer.Scanner;
 import postfix.lexer.Token;
+import postfix.lexer.TokenType;
 import postfix.parser.Parser;
 import postfix.parser.ParserError;
 
@@ -38,7 +40,9 @@ import postfix.parser.ParserError;
  */
 public class Postfix {
 
-	private static final Interpreter interpreter = new Interpreter();
+	public static String resposta = ""; // Será usada para ids estáticos ou dinâmicos.
+
+	private static final Interpreter interpreter = new Interpreter(new HashMap<String, String>());
 	private static boolean hasError = false;
 	private static boolean debugging = false;
 
@@ -83,6 +87,32 @@ public class Postfix {
 		InputStreamReader input = new InputStreamReader(System.in);
 		BufferedReader reader = new BufferedReader(input);
 
+		System.out.print("Deseja criar seus próprios ids?\nResposta [s/n]: ");
+		resposta = reader.readLine();
+
+		if(resposta.charAt(0) == 's' || resposta.charAt(0) == 'S'){
+			System.out.println("Regras para criar ids: " +
+					"\n\t1. Ids precisam começar com uma letra minúscula" +
+					"\n\t2. Após a primeira letra, letras maiúsculas e números são aceitos" +
+					"\n\t3. Digite os ids como nos exemplos a seguir:" +
+					"\n\t   Exemplos:" +
+					"\n\t\t abc1=10 | aBC12=11 | numero=14" +
+					"\n\t   ou seja, sem espaços entre o id e o seu valor");
+
+			System.out.print("\nQuantidade de ids (é necessário pelo menos 1 id): ");
+			int n = Integer.parseInt(reader.readLine());
+
+			for (int i = 0; i < n; i++) {
+				String attr = reader.readLine();
+				interpreter.id.put(attr.split("=")[0], attr.split("=")[1]);
+			}
+		}
+		else{
+			System.out.println("Existem apenas dois ids estáticos, y = 10 e x = 15.");
+		}
+
+		System.out.println("A execução principal de RPNStacker começa a seguir...");
+
 		for (;;) { 
 			System.out.print("> ");
 			String line = reader.readLine();
@@ -114,6 +144,14 @@ public class Postfix {
 			if(debugging) {
 				printAST(expr);
 			}
+
+			// Caso a resposta no começo da execução do programa seja "y", inicia um id estático.
+			if (resposta.charAt(0) == 'n') {
+				interpreter.id.put("y", "10");
+				interpreter.id.put("x", "15");
+			}
+
+			printTokens(tokens);
 			System.out.println(interpreter.interp(expr));
 		} catch (LexError e) {
 			error("Lex", e.getMessage());
@@ -147,6 +185,11 @@ public class Postfix {
 
 	private static void printTokens(List<Token> tokens) {
 		for (Token token : tokens) {
+			// Como agora variávies são aceitas, pode ocorrer do usuário digitar uma variável que não existe
+			// por esse motivo faço a checagem no if abaixo
+			if(token.type == TokenType.ID && !interpreter.id.containsKey(token.lexeme)){
+				throw new LexError("Unexpected character: " + token.lexeme);
+			}
 			System.out.println(token);
 		}
 		System.out.println();

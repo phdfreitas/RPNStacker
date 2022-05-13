@@ -74,6 +74,9 @@ public class Scanner {
 		else if(Regex.isOP(token)) {
 			ret = new Token(Regex.getOPTokenType(token), token);
 		}
+		else if(Regex.isId(token)){
+			ret = new Token(TokenType.ID, token);
+		}
 		else {
 			throw new LexError("Unexpected character: "+token);
 		}

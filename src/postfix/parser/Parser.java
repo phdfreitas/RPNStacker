@@ -59,9 +59,16 @@ public class Parser {
 					TokenType.SLASH, TokenType.STAR)) {
 				this.stack.push(this.binop());
 			}
+			else if(this.match(TokenType.ID)){  // Quando for um Token do tipo ID usa o metodo number()
+				this.stack.push(this.id());
+			}
 			this.advance();
 		}
 		return this.stack.pop();
+	}
+
+	private Expr id() {
+		return new Expr.Id(peek().lexeme);
 	}
 
 	private Expr number() {
